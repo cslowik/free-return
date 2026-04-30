@@ -27,11 +27,11 @@ class GameScene: SKScene {
 
     // Drag input
     private var isDragging = false
-    private let maxDragDistance: CGFloat = 80
+    private let maxDragDistance: CGFloat = 220
     private let launchSpeedScale: CGFloat = 3
 
     // Bounds — how far off-screen before we declare the craft lost
-    private let offScreenBuffer: CGFloat = 300
+    private let offScreenBuffer: CGFloat = 800
 
     // HUD
     private let restartButtonName = "restartButton"
