@@ -13,7 +13,7 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let scene = GameScene(size: view.bounds.size)
+        let scene = GameScene(size: WorldCanvas.size)
         scene.scaleMode = .aspectFill
 
         if let view = self.view as? SKView {
