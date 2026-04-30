@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		2A87B9322FA2FCE100BE8C3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A87B8FE2FA2DE5100BE8C3E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A87B9052FA2DE5100BE8C3E;
+			remoteInfo = "Free Return";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		2A87B9062FA2DE5100BE8C3E /* Free Return.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Free Return.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A87B92E2FA2FCE100BE8C3E /* Free Return Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Free Return Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = "Free Return";
 			sourceTree = "<group>";
 		};
+		2A87B92F2FA2FCE100BE8C3E /* Free Return Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Free Return Tests";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2A87B9032FA2DE5100BE8C3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A87B92B2FA2FCE100BE8C3E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				2A87B9082FA2DE5100BE8C3E /* Free Return */,
+				2A87B92F2FA2FCE100BE8C3E /* Free Return Tests */,
 				2A87B9072FA2DE5100BE8C3E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				2A87B9062FA2DE5100BE8C3E /* Free Return.app */,
+				2A87B92E2FA2FCE100BE8C3E /* Free Return Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 2A87B9062FA2DE5100BE8C3E /* Free Return.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2A87B92D2FA2FCE100BE8C3E /* Free Return Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A87B9342FA2FCE100BE8C3E /* Build configuration list for PBXNativeTarget "Free Return Tests" */;
+			buildPhases = (
+				2A87B92A2FA2FCE100BE8C3E /* Sources */,
+				2A87B92B2FA2FCE100BE8C3E /* Frameworks */,
+				2A87B92C2FA2FCE100BE8C3E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A87B9332FA2FCE100BE8C3E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2A87B92F2FA2FCE100BE8C3E /* Free Return Tests */,
+			);
+			name = "Free Return Tests";
+			packageProductDependencies = (
+			);
+			productName = "Free Return Tests";
+			productReference = 2A87B92E2FA2FCE100BE8C3E /* Free Return Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					2A87B9052FA2DE5100BE8C3E = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					2A87B92D2FA2FCE100BE8C3E = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 2A87B9052FA2DE5100BE8C3E;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				2A87B9052FA2DE5100BE8C3E /* Free Return */,
+				2A87B92D2FA2FCE100BE8C3E /* Free Return Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2A87B9042FA2DE5100BE8C3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A87B92C2FA2FCE100BE8C3E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2A87B92A2FA2FCE100BE8C3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A87B9332FA2FCE100BE8C3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A87B9052FA2DE5100BE8C3E /* Free Return */;
+			targetProxy = 2A87B9322FA2FCE100BE8C3E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2A87B91B2FA2DE5200BE8C3E /* Debug */ = {
@@ -310,6 +385,48 @@
 			};
 			name = Release;
 		};
+		2A87B9352FA2FCE100BE8C3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8U4R9Q4J3X;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Slowik.Free-Return-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Free Return.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Free Return";
+			};
+			name = Debug;
+		};
+		2A87B9362FA2FCE100BE8C3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8U4R9Q4J3X;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Slowik.Free-Return-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Free Return.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Free Return";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +444,15 @@
 			buildConfigurations = (
 				2A87B91E2FA2DE5200BE8C3E /* Debug */,
 				2A87B91F2FA2DE5200BE8C3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A87B9342FA2FCE100BE8C3E /* Build configuration list for PBXNativeTarget "Free Return Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A87B9352FA2FCE100BE8C3E /* Debug */,
+				2A87B9362FA2FCE100BE8C3E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
