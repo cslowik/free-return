@@ -66,4 +66,9 @@ enum LevelLoader {
         }
         return level
     }
+
+    static func loadAll(bundle: Bundle = .main) throws -> [Level] {
+        let manifest = try loadManifest(bundle: bundle)
+        return try manifest.levels.map { try load(id: $0, bundle: bundle) }
+    }
 }
