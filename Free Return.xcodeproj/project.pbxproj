@@ -55,9 +55,9 @@
 		2A87B8FD2FA2DE5100BE8C3E = {
 			isa = PBXGroup;
 			children = (
-				2A87B9082FA2DE5100BE8C3E /* Free Return */,
 				2A87B92F2FA2FCE100BE8C3E /* Free Return Tests */,
 				2A87B9072FA2DE5100BE8C3E /* Products */,
+				2A87B9082FA2DE5100BE8C3E /* Free Return */,
 			);
 			sourceTree = "<group>";
 		};
