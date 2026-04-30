@@ -37,4 +37,33 @@ enum LevelLoader {
             )
         }
     }
+
+    static func load(id: String, bundle: Bundle = .main) throws -> Level {
+        guard let url = bundle.url(forResource: id, withExtension: "json") else {
+            throw LevelLoaderError.levelNotFound(id: id)
+        }
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            throw LevelLoaderError.levelNotFound(id: id)
+        }
+        return try decodeLevel(from: data, expectingId: id)
+    }
+
+    static func decodeLevel(from data: Data, expectingId expectedId: String) throws -> Level {
+        let level: Level
+        do {
+            level = try JSONDecoder().decode(Level.self, from: data)
+        } catch {
+            throw LevelLoaderError.decodeFailed(
+                id: expectedId,
+                underlying: String(describing: error)
+            )
+        }
+        guard level.id == expectedId else {
+            throw LevelLoaderError.idMismatch(expected: expectedId, actual: level.id)
+        }
+        return level
+    }
 }
