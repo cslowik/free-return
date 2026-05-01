@@ -11,7 +11,7 @@ class TrajectoryPreview: SKNode {
 
     private var dots: [SKShapeNode] = []
 
-    private let simulationSteps = 420
+    private let simulationSteps = 150
     private let simulationDt: CGFloat = 1.0 / 60.0
     private let dotInterval = 7       // sample every Nth simulation step
     private let dotRadius: CGFloat = 2
