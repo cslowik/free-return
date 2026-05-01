@@ -1,0 +1,9 @@
+{
+  "id": "level-001",
+  "name": "First Steps",
+  "shipStart": { "x": 540, "y": 346 },
+  "planets": [
+    { "position": { "x": 540, "y": 960 }, "mass": 8000, "radius": 40 }
+  ],
+  "target": { "position": { "x": 540, "y": 1690 }, "radius": 30 }
+}

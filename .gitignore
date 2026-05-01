@@ -52,6 +52,7 @@ Icon?
 # Editors
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~

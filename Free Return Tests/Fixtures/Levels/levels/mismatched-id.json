@@ -1,0 +1,7 @@
+{
+  "id": "actually-something-else",
+  "name": "Wrong",
+  "shipStart": { "x": 0, "y": 0 },
+  "planets": [],
+  "target": { "position": { "x": 0, "y": 0 }, "radius": 1 }
+}

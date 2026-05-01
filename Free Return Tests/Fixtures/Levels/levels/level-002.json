@@ -1,0 +1,11 @@
+{
+  "id": "level-002",
+  "name": "Triple",
+  "shipStart": { "x": 100, "y": 100 },
+  "planets": [
+    { "position": { "x": 200, "y": 400 }, "mass": 5000, "radius": 30 },
+    { "position": { "x": 800, "y": 400 }, "mass": 5000, "radius": 30 },
+    { "position": { "x": 540, "y": 1200 }, "mass": 7000, "radius": 35 }
+  ],
+  "target": { "position": { "x": 540, "y": 1700 }, "radius": 30 }
+}

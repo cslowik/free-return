@@ -2,21 +2,18 @@
 //  GameScene.swift
 //  Free Return
 //
-//  Created by Chris Slowik on 4/29/26.
-//
 
 import SpriteKit
 
 private enum GameState {
     case aiming
     case flying
-    case won
-    case crashed
+    case settled(GameOutcome)
 }
 
 class GameScene: SKScene {
 
-    // World
+    // World — wired up by LevelBuilder
     private var spacecraft: SpacecraftNode!
     private var trajectoryPreview: TrajectoryPreview!
     private var targetZone: TargetZoneNode!
@@ -29,56 +26,29 @@ class GameScene: SKScene {
 
     // Drag input
     private var isDragging = false
-    private let maxDragDistance: CGFloat = 80
+    private let maxDragDistance: CGFloat = 220
     private let launchSpeedScale: CGFloat = 3
 
     // Bounds — how far off-screen before we declare the craft lost
-    private let offScreenBuffer: CGFloat = 300
+    private let offScreenBuffer: CGFloat = 800
 
     // HUD
     private let restartButtonName = "restartButton"
 
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.03, green: 0.03, blue: 0.12, alpha: 1)
-        setupTestLevel()
-        setupHUD()
-    }
-
-    // MARK: - Level Setup
-
-    private func setupTestLevel() {
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let planet = GravityBody(position: center, mass: 8000, radius: 40)
-        gravityBodies = [planet]
-        addChild(makePlanetNode(for: planet, color: .systemBlue))
-
-        shipStart = CGPoint(x: size.width / 2, y: size.height * 0.18)
-        spacecraft = SpacecraftNode(at: shipStart)
-        addChild(spacecraft)
-
-        trajectoryPreview = TrajectoryPreview()
-        addChild(trajectoryPreview)
-
-        targetZone = TargetZoneNode(
-            at: CGPoint(x: size.width / 2, y: size.height * 0.88),
-            radius: 30
-        )
-        addChild(targetZone)
-    }
-
-    private func makePlanetNode(for body: GravityBody, color: SKColor) -> SKNode {
-        let node = SKShapeNode(circleOfRadius: body.radius)
-        node.position = body.position
-        node.fillColor = color
-        node.strokeColor = color.withAlphaComponent(0.4)
-        node.lineWidth = body.radius * 0.25
-
-        let halo = SKShapeNode(circleOfRadius: body.radius * 1.7)
-        halo.fillColor = color.withAlphaComponent(0.08)
-        halo.strokeColor = .clear
-        node.addChild(halo)
-
-        return node
+        do {
+            let level = try LevelLoader.load(id: "level-001")
+            let built = LevelBuilder.build(level, into: self)
+            spacecraft = built.spacecraft
+            trajectoryPreview = built.trajectoryPreview
+            targetZone = built.targetZone
+            gravityBodies = built.gravityBodies
+            shipStart = built.shipStart
+            setupHUD()
+        } catch {
+            showFatalError(error)
+        }
     }
 
     private func setupHUD() {
@@ -93,6 +63,19 @@ class GameScene: SKScene {
         addChild(restart)
     }
 
+    private func showFatalError(_ error: Error) {
+        backgroundColor = .black
+        let label = SKLabelNode(text: "Level load failed:\n\(error)")
+        label.fontName = "Avenir-Heavy"
+        label.fontSize = 18
+        label.fontColor = .systemRed
+        label.numberOfLines = 0
+        label.preferredMaxLayoutWidth = WorldCanvas.size.width - 80
+        label.position = CGPoint(x: WorldCanvas.size.width / 2,
+                                 y: WorldCanvas.size.height / 2)
+        addChild(label)
+    }
+
     // MARK: - Touch
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -104,26 +87,26 @@ class GameScene: SKScene {
             return
         }
 
-        if gameState == .won || gameState == .crashed {
+        if case .settled = gameState {
             resetLevel()
             return
         }
 
-        guard gameState == .aiming else { return }
+        guard case .aiming = gameState, let spacecraft = spacecraft else { return }
         if pos.distance(to: spacecraft.position) < 44 {
             isDragging = true
         }
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard isDragging, let touch = touches.first else { return }
+        guard isDragging, let touch = touches.first, let spacecraft = spacecraft else { return }
         let velocity = launchVector(from: spacecraft.position, draggedTo: touch.location(in: self))
         let previewState = SimState(position: spacecraft.position, velocity: velocity)
         trajectoryPreview.update(from: previewState, bodies: gravityBodies)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard isDragging, let touch = touches.first else { return }
+        guard isDragging, let touch = touches.first, let spacecraft = spacecraft else { return }
         isDragging = false
         trajectoryPreview.hide()
         let velocity = launchVector(from: spacecraft.position, draggedTo: touch.location(in: self))
@@ -133,7 +116,7 @@ class GameScene: SKScene {
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         isDragging = false
-        trajectoryPreview.hide()
+        trajectoryPreview?.hide()
     }
 
     private func isRestartTap(at pos: CGPoint) -> Bool {
@@ -151,47 +134,43 @@ class GameScene: SKScene {
     // MARK: - Update / Collisions
 
     override func update(_ currentTime: TimeInterval) {
-        spacecraft.advance(bodies: gravityBodies, dt: 1.0 / 60.0)
-        if gameState == .flying {
+        spacecraft?.advance(bodies: gravityBodies, dt: 1.0 / 60.0)
+        if case .flying = gameState {
             checkCollisions()
         }
     }
 
     private func checkCollisions() {
+        guard let spacecraft = spacecraft else { return }
         let pos = spacecraft.simState.position
 
         if targetZone.contains(pos) {
-            winLevel()
+            settle(with: .targetReached)
             return
         }
 
         for body in gravityBodies {
             if pos.distance(to: body.position) <= body.radius {
-                crash(at: pos)
+                settle(with: .crashed)
                 return
             }
         }
 
         if pos.x < -offScreenBuffer || pos.x > size.width + offScreenBuffer ||
            pos.y < -offScreenBuffer || pos.y > size.height + offScreenBuffer {
-            crash(at: pos)
+            settle(with: .lostInSpace)
         }
     }
 
     // MARK: - Outcomes
 
-    private func winLevel() {
-        gameState = .won
-        playBurst(at: spacecraft.position, color: .systemGreen, count: 3)
+    private func settle(with outcome: GameOutcome) {
+        gameState = .settled(outcome)
+        let color: SKColor = outcome.isSuccess ? .systemGreen : .systemRed
+        let burstCount = outcome.isSuccess ? 3 : 1
+        playBurst(at: spacecraft.position, color: color, count: burstCount)
         spacecraft.isHidden = true
-        showMessage("Free Return Achieved", color: .systemGreen)
-    }
-
-    private func crash(at position: CGPoint) {
-        gameState = .crashed
-        playBurst(at: position, color: .systemRed, count: 1)
-        spacecraft.isHidden = true
-        showMessage("Lost in Space", color: .systemRed)
+        showMessage(outcome.title, color: color)
     }
 
     private func resetLevel() {
