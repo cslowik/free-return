@@ -47,7 +47,8 @@ class GameScene: SKScene {
     private let restartButtonName = "restartButton"
 
     override func didMove(to view: SKView) {
-        backgroundColor = SKColor(red: 0.03, green: 0.03, blue: 0.12, alpha: 1)
+        backgroundColor = .black
+        addChild(StarfieldBackground.make(size: size))
         do {
             let level = try LevelLoader.load(id: "level-002")
             let built = LevelBuilder.build(level, into: self)
