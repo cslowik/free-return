@@ -8,8 +8,7 @@ import SpriteKit
 private enum GameState {
     case aiming
     case flying
-    case won
-    case crashed
+    case settled(GameOutcome)
 }
 
 class GameScene: SKScene {
@@ -88,12 +87,12 @@ class GameScene: SKScene {
             return
         }
 
-        if gameState == .won || gameState == .crashed {
+        if case .settled = gameState {
             resetLevel()
             return
         }
 
-        guard gameState == .aiming, let spacecraft = spacecraft else { return }
+        guard case .aiming = gameState, let spacecraft = spacecraft else { return }
         if pos.distance(to: spacecraft.position) < 44 {
             isDragging = true
         }
@@ -136,7 +135,7 @@ class GameScene: SKScene {
 
     override func update(_ currentTime: TimeInterval) {
         spacecraft?.advance(bodies: gravityBodies, dt: 1.0 / 60.0)
-        if gameState == .flying {
+        if case .flying = gameState {
             checkCollisions()
         }
     }
@@ -146,37 +145,32 @@ class GameScene: SKScene {
         let pos = spacecraft.simState.position
 
         if targetZone.contains(pos) {
-            winLevel()
+            settle(with: .targetReached)
             return
         }
 
         for body in gravityBodies {
             if pos.distance(to: body.position) <= body.radius {
-                crash(at: pos)
+                settle(with: .crashed)
                 return
             }
         }
 
         if pos.x < -offScreenBuffer || pos.x > size.width + offScreenBuffer ||
            pos.y < -offScreenBuffer || pos.y > size.height + offScreenBuffer {
-            crash(at: pos)
+            settle(with: .lostInSpace)
         }
     }
 
     // MARK: - Outcomes
 
-    private func winLevel() {
-        gameState = .won
-        playBurst(at: spacecraft.position, color: .systemGreen, count: 3)
+    private func settle(with outcome: GameOutcome) {
+        gameState = .settled(outcome)
+        let color: SKColor = outcome.isSuccess ? .systemGreen : .systemRed
+        let burstCount = outcome.isSuccess ? 3 : 1
+        playBurst(at: spacecraft.position, color: color, count: burstCount)
         spacecraft.isHidden = true
-        showMessage("Free Return Achieved", color: .systemGreen)
-    }
-
-    private func crash(at position: CGPoint) {
-        gameState = .crashed
-        playBurst(at: position, color: .systemRed, count: 1)
-        spacecraft.isHidden = true
-        showMessage("Lost in Space", color: .systemRed)
+        showMessage(outcome.title, color: color)
     }
 
     private func resetLevel() {
