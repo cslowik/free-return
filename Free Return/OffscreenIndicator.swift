@@ -17,7 +17,7 @@ class OffscreenIndicator: SKNode {
 
     override init() {
         dot = SKShapeNode(circleOfRadius: baseRadius)
-        dot.fillColor = .white
+        dot.fillColor = SKColor(red: 0.65, green: 0.45, blue: 1.0, alpha: 1)
         dot.strokeColor = .clear
         super.init()
         isHidden = true
@@ -26,7 +26,7 @@ class OffscreenIndicator: SKNode {
 
     required init?(coder aDecoder: NSCoder) { fatalError() }
 
-    func update(shipPosition: CGPoint, visibleRect: CGRect, lostBuffer: CGFloat) {
+    func update(shipPosition: CGPoint, visibleRect: CGRect, screenCornerRadius: CGFloat, lostBuffer: CGFloat) {
         let minX = visibleRect.minX, maxX = visibleRect.maxX
         let minY = visibleRect.minY, maxY = visibleRect.maxY
 
@@ -48,9 +48,11 @@ class OffscreenIndicator: SKNode {
             return
         }
 
-        let clampedX = min(max(shipPosition.x, minX + edgeInset), maxX - edgeInset)
-        let clampedY = min(max(shipPosition.y, minY + edgeInset), maxY - edgeInset)
-        let edgePoint = CGPoint(x: clampedX, y: clampedY)
+        let edgePoint = clampToRoundedRect(
+            point: shipPosition,
+            rect: visibleRect,
+            cornerRadius: screenCornerRadius
+        )
 
         let dx = shipPosition.x - edgePoint.x
         let dy = shipPosition.y - edgePoint.y
@@ -73,5 +75,36 @@ class OffscreenIndicator: SKNode {
     func hide() {
         offscreenSince = nil
         isHidden = true
+    }
+
+    private func clampToRoundedRect(point: CGPoint, rect: CGRect, cornerRadius: CGFloat) -> CGPoint {
+        var x = min(max(point.x, rect.minX + edgeInset), rect.maxX - edgeInset)
+        var y = min(max(point.y, rect.minY + edgeInset), rect.maxY - edgeInset)
+
+        guard cornerRadius > edgeInset else { return CGPoint(x: x, y: y) }
+
+        let centers: [CGPoint] = [
+            CGPoint(x: rect.minX + cornerRadius, y: rect.minY + cornerRadius),
+            CGPoint(x: rect.maxX - cornerRadius, y: rect.minY + cornerRadius),
+            CGPoint(x: rect.minX + cornerRadius, y: rect.maxY - cornerRadius),
+            CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY - cornerRadius),
+        ]
+        let inZone: [Bool] = [
+            x < centers[0].x && y < centers[0].y,
+            x > centers[1].x && y < centers[1].y,
+            x < centers[2].x && y > centers[2].y,
+            x > centers[3].x && y > centers[3].y,
+        ]
+        if let idx = inZone.firstIndex(of: true) {
+            let c = centers[idx]
+            let dx = x - c.x, dy = y - c.y
+            let d = sqrt(dx * dx + dy * dy)
+            let limit = cornerRadius - edgeInset
+            if d > limit && d > 0 {
+                x = c.x + dx * limit / d
+                y = c.y + dy * limit / d
+            }
+        }
+        return CGPoint(x: x, y: y)
     }
 }

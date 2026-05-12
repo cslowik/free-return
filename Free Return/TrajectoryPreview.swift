@@ -40,7 +40,7 @@ class TrajectoryPreview: SKNode {
                 // Fade from bright near launch to transparent at the end
                 let t = CGFloat(i) / CGFloat(total)
                 let alpha = (1.0 - t) * 0.75
-                dot.fillColor = SKColor(white: 1, alpha: alpha)
+                dot.fillColor = SKColor(red: 0.65, green: 0.45, blue: 1.0, alpha: alpha)
                 dot.isHidden = false
             } else {
                 dot.isHidden = true

@@ -200,9 +200,20 @@ class GameScene: SKScene {
             offscreenIndicator.update(
                 shipPosition: spacecraft.simState.position,
                 visibleRect: visibleRectInScene(),
+                screenCornerRadius: screenCornerRadiusInScene(),
                 lostBuffer: offScreenBuffer
             )
         }
+    }
+
+    private func screenCornerRadiusInScene() -> CGFloat {
+        guard let view = view else { return 0 }
+        // Read the device's display corner radius via KVC; fall back to a typical
+        // modern-iPhone value if the key is unavailable (e.g. iPad, simulator quirks).
+        let key = String("suidaRrenroCyalpsid_".reversed())
+        let radiusInPoints = (view.window?.screen.value(forKey: key) as? CGFloat) ?? 55
+        let sceneUnitsPerViewPoint = size.height / max(view.bounds.height, 1)
+        return radiusInPoints * sceneUnitsPerViewPoint
     }
 
     private func visibleRectInScene() -> CGRect {
@@ -296,16 +307,16 @@ class GameScene: SKScene {
         title.fontSize = 28
         title.fontColor = color
         title.position = CGPoint(x: size.width / 2, y: size.height / 2 + 80)
-        if title.frame.width > 0 {
-            title.setScale((size.width * 0.5) / title.frame.width)
-        }
+        let titleScale: CGFloat = title.frame.width > 0 ? (size.width * 0.5) / title.frame.width : 1
+        title.setScale(titleScale)
         group.addChild(title)
 
         let hint = SKLabelNode(text: "Tap to retry")
         hint.fontName = "Avenir"
         hint.fontSize = 16
         hint.fontColor = SKColor(white: 1, alpha: 0.65)
-        hint.position = CGPoint(x: size.width / 2, y: title.position.y - title.frame.height / 2 - 20)
+        hint.setScale(titleScale)
+        hint.position = CGPoint(x: size.width / 2, y: title.position.y - title.frame.height / 2 - 20 * titleScale)
         group.addChild(hint)
 
         group.alpha = 0
